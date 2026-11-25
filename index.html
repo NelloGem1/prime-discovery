@@ -154,6 +154,40 @@ infinite_primes_ours      ✓ axioms: [propext, Classical.choice, Quot.sound]
 <p class="note">Files: <code>LeanLab/PrimeDigits.lean</code>, <code>LeanLab/PrimeSieve.lean</code>, <code>LeanLab/GapClaims.lean</code> — zero sorrys, zero added axioms.</p>
 </div>
 
+<h3>🖨️ Verified theorems — raw output</h3>
+<p>The exact <code>#print axioms</code> / compiler-verified statements, as they appear in the Lean files:</p>
+<div class="lean"><pre style="margin:0;white-space:pre-wrap;font-family:Consolas,monospace">VERIFIED
+theorem two_mul_sumTo (n : ℕ) : 2 * sumTo n = n * (n + 1)
+theorem sumTo_eq (n : ℕ) : sumTo n = n * (n + 1) / 2
+axioms: propext, Quot.sound — Gauss's 10-year-old formula, proved by induction, kernel-checked ∀n
+
+VERIFIED
+theorem nat_le_two_pow (n : ℕ) : n ≤ 2 ^ n
+axioms: propext, Classical.choice, Quot.sound
+
+VERIFIED
+theorem two_pow_le_factorial (n : ℕ) : 2 ^ n ≤ (n + 1) !
+axioms: propext, Classical.choice, Quot.sound — exponentials lose to factorials
+
+VERIFIED
+theorem infinite_primes : Set.Infinite {p : ℕ | Nat.Prime p}
+axioms: propext, Classical.choice, Quot.sound — Euclid's theorem, reused from Mathlib (already machine-proved inside the library)
+
+VERIFIED · Neilbert's theorem
+theorem prime_gt_five_last_digit (p : ℕ) (hp : p.Prime) (h5 : 5 &lt; p) :
+  p % 10 = 1 ∨ p % 10 = 3 ∨ p % 10 = 7 ∨ p % 10 = 9
+axioms: propext, Classical.choice, Quot.sound — discovered by Neilbert via the 0–9 digit table, proved by Devin. File: LeanLab/PrimeDigits.lean
+
+VERIFIED · Neilbert's sieve
+theorem prime_mod30 (hp : p.Prime) (h5 : 5 &lt; p) :
+  p % 30 ∈ {1,7,11,13,17,19,23,29}
+axioms: propext, Classical.choice, Quot.sound — Neilbert's digit-table insight, extended: primes &gt;5 survive only 8 of 30 residue classes. The real prime lattice. File: LeanLab/PrimeSieve.lean
+
+VERIFIED · Euclid, our proof
+theorem infinite_primes_ours : Set.Infinite {p : ℕ | p.Prime}
+axioms: propext, Classical.choice, Quot.sound — Euclid's proof written by us (not imported): N = ∏primes + 1 forces a new prime. ~300 BC meets the kernel.</pre></div>
+<p class="note">Every line above was checked by the Lean kernel — <b>∀n</b> means "for all n, infinitely many cases," not just tested ones. No <code>sorryAx</code> anywhere.</p>
+
 <h2><span class="ch">CHAPTER 9</span>Verify it yourself</h2>
 <p>Don't take our word for it — the theorems are checkable by anyone. Three ways, easy to rigorous:</p>
 <p>⚡ <b>Fastest:</b> <a href="verify.html" style="color:#58a6ff">verify.html</a> — all formulas, the Python script, the Lean theorems, and the AI prompt in one copy-paste page.</p>
