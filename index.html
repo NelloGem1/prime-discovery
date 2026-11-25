@@ -137,6 +137,23 @@ infinite_primes_ours      ✓ axioms: [propext, Classical.choice, Quot.sound]
 <p class="note"><b>What would be BAD:</b> if the list contained <code>sorryAx</code>, it would mean the proof contains a hole — an unproven assumption smuggled in. Our theorems have <b>no sorryAx</b>: every step was checked. And <code>assumed_not_proved</code> from the GAP audit showed the opposite — a "proof" that depends on itself.</p>
 </div>
 
+<h3>📋 The complete verified theorem list</h3>
+<p>Seven theorems, all kernel-checked in Lean 4 + Mathlib, all depending only on the three standard axioms above:</p>
+<div class="card">
+<table style="width:100%;border:none">
+<tr><th style="text-align:left">Theorem</th><th style="text-align:left">Statement</th><th style="text-align:left">Axioms</th></tr>
+<tr><td><code>two_mul_sumTo (n : ℕ)</code></td><td>2 × (1+2+...+n) = n(n+1) — Gauss's childhood formula, by induction</td><td>propext, Quot.sound</td></tr>
+<tr><td><code>sumTo_eq (n : ℕ)</code></td><td>1+2+...+n = n(n+1)/2</td><td>propext, Quot.sound</td></tr>
+<tr><td><code>nat_le_two_pow (n : ℕ)</code></td><td>n ≤ 2ⁿ — exponentials outgrow every number</td><td>propext, Classical.choice, Quot.sound</td></tr>
+<tr><td><code>two_pow_le_factorial (n : ℕ)</code></td><td>2ⁿ ≤ (n+1)! — exponentials lose to factorials</td><td>propext, Classical.choice, Quot.sound</td></tr>
+<tr><td><code>infinite_primes</code></td><td>Primes are infinite — Euclid's theorem, reused from Mathlib</td><td>propext, Classical.choice, Quot.sound</td></tr>
+<tr><td><code>prime_gt_five_last_digit</code> <span class="badge b-ok">Neilbert's theorem</span></td><td>Every prime &gt; 5 ends in 1, 3, 7, or 9</td><td>propext, Classical.choice, Quot.sound</td></tr>
+<tr><td><code>prime_mod30</code> <span class="badge b-ok">Neilbert's sieve</span></td><td>Every prime &gt; 5 lands in only 8 of 30 residue classes</td><td>propext, Classical.choice, Quot.sound</td></tr>
+<tr><td><code>exists_prime_not_mem</code> + <code>infinite_primes_ours</code> <span class="badge b-ok">Euclid, our proof</span></td><td>Euclid's proof written by us (not imported): product of primes + 1 forces a new prime. ~300 BC meets the kernel.</td><td>propext, Classical.choice, Quot.sound</td></tr>
+</table>
+<p class="note">Files: <code>LeanLab/PrimeDigits.lean</code>, <code>LeanLab/PrimeSieve.lean</code>, <code>LeanLab/GapClaims.lean</code> — zero sorrys, zero added axioms.</p>
+</div>
+
 <h2><span class="ch">CHAPTER 9</span>Verify it yourself</h2>
 <p>Don't take our word for it — the theorems are checkable by anyone. Two ways, easy to rigorous:</p>
 
@@ -187,8 +204,9 @@ Test it in any language — Python, JS, a spreadsheet. If you find ONE prime vio
 <p>That loop — <i>pattern → test → precise statement → machine verification</i> — is the actual method of mathematics. It took humanity 2,300 years to prove primes are infinite; it took this project one afternoon to formalize it. The gap between a hunch and a theorem is bridgeable — and now it's been bridged, once, for real.</p>
 
 <div class="credit">
-<b>Neilbert G. Carillo</b><br>
+<b>Nello Gem (Neilbert G. Carillo)</b><br>
 <span class="note">Independent researcher · Pagadian City, Zamboanga del Sur, Philippines<br>
+"Nello Gem" = <b>NE</b>ilbert <b>GEM</b>eniano <b>cari</b>LLO<br>
 neil.hkrmzn@gmail.com · Discovery: the digit-table insight &amp; the prime pattern<br>Formalization &amp; verification: Devin · Lean 4 + Mathlib v4.24.0<br>March–November 2026</span>
 </div>
 
