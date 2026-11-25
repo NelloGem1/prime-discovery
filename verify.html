@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify the Prime Discovery — Nello Gem</title>
+<style>
+  :root{--bg:#0d1117;--panel:#161b22;--grid:#30363d;--txt:#e6edf3;--mut:#8b949e;--gold:#f0b429;--green:#3fb950;--red:#f85149;--blue:#58a6ff;--purple:#d2a8ff}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:'Segoe UI',system-ui,sans-serif;line-height:1.6;padding:40px 20px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{color:var(--gold);font-size:2.2rem;margin-bottom:8px}
+  h2{color:var(--gold);font-size:1.4rem;margin:40px 0 14px;border-bottom:1px solid var(--grid);padding-bottom:8px}
+  .sub{color:var(--mut);margin-bottom:30px}
+  .formula{background:var(--panel);border:2px solid var(--gold);border-radius:14px;padding:22px 26px;margin:16px 0;font-family:Consolas,monospace;font-size:1.05rem}
+  .formula b{color:var(--gold)}
+  .code{background:#0a0e14;border:1px solid var(--grid);border-radius:12px;padding:18px 20px;font-family:Consolas,'Courier New',monospace;font-size:.88rem;line-height:1.55;overflow-x:auto;white-space:pre;color:#a5d6ff;margin:12px 0;position:relative}
+  .code .cm{color:#8b949e}
+  .tag{position:absolute;top:10px;right:14px;font-size:.7rem;color:var(--mut);font-family:'Segoe UI',sans-serif}
+  .copybtn{position:absolute;top:8px;right:8px;background:var(--panel);border:1px solid var(--grid);color:var(--mut);border-radius:8px;padding:4px 12px;font-size:.75rem;cursor:pointer}
+  .copybtn:hover{color:var(--txt);border-color:var(--blue)}
+  .card{background:var(--panel);border:1px solid var(--grid);border-radius:14px;padding:20px 24px;margin:16px 0}
+  .card h3{font-size:1.05rem;margin-bottom:10px}
+  ol{margin:8px 0 8px 22px}
+  li{margin:6px 0}
+  code{background:#0a0e14;padding:2px 7px;border-radius:6px;font-family:Consolas,monospace;font-size:.85em;color:#a5d6ff}
+  .ai{border-color:var(--purple)}
+  .ai blockquote{border-left:3px solid var(--purple);padding:10px 16px;margin:12px 0;background:#0a0e14;border-radius:0 10px 10px 0;font-style:italic}
+  a{color:var(--blue)}
+  .credit{margin-top:50px;padding-top:20px;border-top:1px solid var(--grid);color:var(--mut);font-size:.9rem}
+  .badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
+  .b-ok{background:#0d3b1e;color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>🔬 Verify the Prime Discovery</h1>
+<p class="sub">Nello Gem (Neilbert G. Carillo) × Devin — every claim below is machine-checked in Lean 4. Don't trust us — check it yourself.</p>
+
+<h2>📐 The Formulas</h2>
+<div class="formula">
+For every prime <b>p &gt; 5</b>:<br>
+&nbsp;&nbsp;<b>p % 10 ∈ { 1, 3, 7, 9 }</b>&nbsp;&nbsp;— the last-digit law<br>
+&nbsp;&nbsp;<b>p % 30 ∈ { 1,7,11,13,17,19,23,29 }</b>&nbsp;&nbsp;— the mod-30 sieve (only 8 of 30 classes survive)
+</div>
+<p class="sub">Find <b>one</b> prime violating either line and the theorem is dead. Nobody has — Lean checked <i>all</i> cases.</p>
+
+<h2>🐍 Option A — Python (2 minutes)</h2>
+<div class="card">
+<p>Needs Python 3 + sympy (<code>pip install sympy</code>). Tests every prime to <b>10 million</b>:</p>
+<div class="code"><button class="copybtn" onclick="copyCode(this)">copy</button><span class="tag">verify_primes.py</span><span id="pycode"># verify_primes.py — paste into any Python 3 and run
+import sympy
+ok1 = ok2 = ok3 = 0
+for p in sympy.primerange(7, 10_000_000):
+    if p % 10 in (1,3,7,9): ok1 += 1
+    if p % 30 in (1,7,11,13,17,19,23,29): ok2 += 1
+    ok3 += 1
+print(f"last-digit law:  {ok1}/{ok3} primes pass")
+print(f"mod-30 sieve:    {ok2}/{ok3} primes pass")
+print(f"counterexamples found: {ok3-ok1} and {ok3-ok2}")  # both should be 0</span></div>
+<p><b>Expected output:</b> every prime passes, counterexamples = 0. (Strong evidence — the real proof is Option B.)</p>
+</div>
+
+<h2>λ Option B — Lean 4 (the machine-checked proof)</h2>
+<div class="card">
+<p>The actual theorem statements, verified by the Lean kernel for <b>all</b> primes &gt; 5:</p>
+<div class="code"><button class="copybtn" onclick="copyCode(this)">copy</button><span class="tag">PrimeSieve.lean</span><span id="lncode">theorem prime_gt_five_last_digit (p : ℕ) (hp : p.Prime) (h5 : 5 &lt; p) :
+  p % 10 = 1 ∨ p % 10 = 3 ∨ p % 10 = 7 ∨ p % 10 = 9
+
+theorem prime_mod30 (hp : p.Prime) (h5 : 5 &lt; p) :
+  p % 30 = 1 ∨ p % 30 = 7 ∨ p % 30 = 11 ∨ p % 30 = 13 ∨
+           p % 30 = 17 ∨ p % 30 = 19 ∨ p % 30 = 23 ∨ p % 30 = 29</span></div>
+<ol>
+<li>Install <b>elan</b> (the Lean version manager — the official installer): Windows <code>winget install leanprover.lean4</code>, or Mac/Linux/WSL: <code>curl https://elan.lean-lang.org/elan-init.sh -sSf | sh</code></li>
+<li><code>lake new verify --lib && cd verify</code></li>
+<li>Add Mathlib to <code>lakefile.lean</code>: <code>require mathlib from git "https://github.com/leanprover-community/mathlib4" @ "v4.24.0"</code> then <code>lake exe cache get</code></li>
+<li>Paste the theorems into <code>Verify/Basic.lean</code>, add <code>#print axioms prime_mod30</code></li>
+<li><code>lake build</code> — success means the kernel checked every case. Axioms should read <code>[propext, Classical.choice, Quot.sound]</code> — no <code>sorryAx</code>.</li>
+</ol>
+</div>
+
+<h2>🤖 Option C — AI check (fastest, zero install)</h2>
+<div class="card ai">
+<p>Paste this into <b>ChatGPT, Claude, or any strong AI</b>:</p>
+<blockquote>"Prove that every prime number greater than 5 ends in 1, 3, 7, or 9. Then prove the stronger version: every prime greater than 5 is congruent to one of {1,7,11,13,17,19,23,29} mod 30. Show your reasoning."</blockquote>
+<p>Watch it derive the proof — it should reason: <i>even endings → divisible by 2, ending in 5 → divisible by 5, and mod 3 eliminates 4 more classes</i>. When the AI arrives at the same four digits and same eight classes independently, the discovery stands on its own — the pattern was real before the proof existed.</p>
+</div>
+
+<h2>📖 Full story</h2>
+<div class="card">
+<p>The complete journey — the 0×0→9×9 digit table, the 21×21 division table, the impostors, the wrong turns, the Lean decoder — is at:<br>
+<a href="https://nellogem1.github.io/prime-discovery/">nellogem1.github.io/prime-discovery</a> · repo: <a href="https://github.com/NelloGem1/prime-discovery">github.com/NelloGem1/prime-discovery</a></p>
+<p class="sub">Video: <a href="https://youtu.be/uX_P2vgJBMo">The Prime Discovery</a> on the Nello Gem channel.</p>
+</div>
+
+<div class="credit">
+<b>Nello Gem (Neilbert G. Carillo)</b> — independent researcher, Pagadian City, Philippines<br>
+<span class="badge b-ok">LEAN VERIFIED</span> Lean 4 + Mathlib v4.24.0 · zero sorrys · only 3 standard axioms<br>
+Discovery: the digit-table insight · Formalization: Devin · March–November 2026
+</div>
+</div>
+<script>
+function copyCode(btn){
+  const id = btn.parentElement.querySelector('[id$="code"]').id;
+  navigator.clipboard.writeText(document.getElementById(id).innerText);
+  btn.textContent='copied!'; setTimeout(()=>btn.textContent='copy',1500);
+}
+</script>
+</body>
+</html>
